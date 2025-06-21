@@ -1,0 +1,64 @@
+{
+  "name": "soomile-backend",
+  "version": "1.0.0",
+  "description": "Soomile 백엔드 레포입니다",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "postbuild": "cp package.json dist/ && mkdir -p dist/swagger && cp -r src/swagger/* dist/swagger/",
+    "start": "node dist/index.cjs",
+    "start:prod": "pm2 start dist/index.cjs",
+    "api-docs": "swagger-cli bundle ./src/swagger/openapi.yaml --outfile build/swagger.yaml --type yaml",
+    "dev": "ts-node --files src/index.ts",
+    "seed": "ts-node seeds/seed.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hardwoong/soomile-backend.git"
+  },
+  "dependencies": {
+    "@types/node": "^22.15.18",
+    "autocannon": "^8.0.0",
+    "axios": "^1.7.9",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.9.3",
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
+    "swagger-cli": "^4.0.4",
+    "swagger-ui-express": "^5.0.1",
+    "ts-node": "^10.9.2",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.4",
+    "@types/axios": "^0.9.36",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.2",
+    "@types/express-session": "^1.18.1",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/morgan": "^1.9.9",
+    "@types/node-cron": "^3.0.11",
+    "@types/swagger-ui-express": "^4.1.7",
+    "@types/yamljs": "^0.2.34",
+    "esbuild": "^0.25.0",
+    "nodemon": "^3.1.9",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hardwoong/soomile-backend/issues"
+  },
+  "homepage": "https://github.com/hardwoong/soomile-backend#readme"
+}

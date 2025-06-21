@@ -1,0 +1,94 @@
+import axios from 'axios';
+import * as stationRepository from '../repositories/station.repository';
+import dotenv from 'dotenv';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dotenv.config();
+
+const SEOUL_API_KEY = process.env.SEOUL_API_KEY;
+const API_BASE_URL = 'http://openapi.seoul.go.kr:8088';
+
+dayjs.extend(customParseFormat);
+
+// API 응답 데이터에 대한 타입 정의 (실제 API 응답과 일치시킴)
+interface ApiAirQualityRow {
+  MSRDATE: string; // Corrected from MSRDT
+  MSRRGN_NM: string;
+  MSRSTENAME: string; // Corrected from MSRSTE_NM
+  PM10: string; // Type changed to string
+  PM25: string; // Type changed to string
+  NITROGEN: string; // Type changed to string
+  OZONE: string; // Type changed to string
+  CARBON: string; // Type changed to string
+  GRADE: string; // Corrected from IDEX_NM
+}
+
+// API의 전체 응답 구조에 대한 타입 정의
+interface SeoulApiResult {
+  CODE: string;
+  MESSAGE: string;
+}
+
+interface SeoulApiResponseContainer {
+  list_total_count: number;
+  RESULT: SeoulApiResult;
+  row: ApiAirQualityRow[];
+}
+
+interface SeoulApiFullResponse {
+  ListAirQualityByDistrictService: SeoulApiResponseContainer;
+}
+
+// 서비스 함수가 반환할 데이터 타입 정의
+export interface AirQualityData {
+  date: string;
+  '구이름': string;
+  grade: string;
+  pm10: number;
+  pm25: number;
+  '오존': number;
+  '일산화탄소': number;
+}
+
+export const getAirQuality = async (stationCode: number): Promise<AirQualityData> => {
+  // 1. 우리 DB에 해당 측정소가 있는지 확인 (Repository 사용)
+  const station = await stationRepository.findByStationCode(stationCode);
+  if (!station) {
+    throw new Error('Station not found');
+  }
+
+  // 2. API 요청 URL 생성
+  const serviceName = 'ListAirQualityByDistrictService';
+  // API는 JSON 형식으로 요청합니다.
+  const url = `${API_BASE_URL}/${SEOUL_API_KEY}/json/${serviceName}/1/1/${station.stationCode}`;
+  
+  // 3. API 호출 (응답 데이터에 대한 타입 명시)
+  const response = await axios.get<SeoulApiFullResponse>(url);
+  const responseData = response.data;
+
+  // 4. API 자체 에러 응답 확인
+  const apiResult = responseData.ListAirQualityByDistrictService?.RESULT;
+  if (!apiResult || apiResult.CODE !== 'INFO-000') {
+    throw new Error(apiResult?.MESSAGE || 'Failed to fetch air quality data from Seoul API');
+  }
+
+  // 5. 실제 데이터(row) 추출 및 반환
+  const airQuality = responseData.ListAirQualityByDistrictService?.row?.[0];
+  if (!airQuality) {
+    throw new Error('Air quality data is not available for the requested station.');
+  }
+
+  const formattedDate = dayjs(airQuality.MSRDATE, 'YYYYMMDDHHmm').format('YYYY년 MM월 DD일 HH시');
+
+  // 6. 우리 서비스에 맞게 데이터 형식 변환 (타입 변환 추가)
+  return {
+    date: formattedDate,
+    '구이름': airQuality.MSRSTENAME,
+    grade: airQuality.GRADE,
+    pm10: parseFloat(airQuality.PM10),
+    pm25: parseFloat(airQuality.PM25),
+    '오존': parseFloat(airQuality.OZONE),
+    '일산화탄소': parseFloat(airQuality.CARBON),
+  };
+}; 
