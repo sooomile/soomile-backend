@@ -5,6 +5,8 @@ export interface IDaycare extends Document {
   address: string;
   latitude: number;
   longitude: number;
+  stationName: string;
+  distanceToStation: number;
 }
 
 const DaycareSchema = new Schema<IDaycare>({
@@ -12,6 +14,8 @@ const DaycareSchema = new Schema<IDaycare>({
   address: { type: String, required: true },
   latitude: { type: Number, required: true },
   longitude: { type: Number, required: true },
+  stationName: { type: String, required: true },
+  distanceToStation: { type: Number, required: true },
 }, {
   timestamps: true,
   collection: 'daycares'

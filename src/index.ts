@@ -6,6 +6,7 @@ import connectDB from './config/db';
 import { responseHandler, errorHandler } from './utils/express.util';
 import { snakeToCamelMiddleware, camelToSnakeMiddleware } from './utils/case-converter.util';
 import stationRoutes from './routes/station.routes';
+import daycareRoutes from './routes/daycare.routes';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(camelToSnakeMiddleware);
 
 // Routes
 app.use(stationRoutes);
+app.use(daycareRoutes);
 app.get('/', (req, res: any) => {
   res.sendSuccess(200, 'API is running successfully');
 });
