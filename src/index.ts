@@ -7,6 +7,7 @@ import { responseHandler, errorHandler } from './utils/express.util';
 import { snakeToCamelMiddleware, camelToSnakeMiddleware } from './utils/case-converter.util';
 import stationRoutes from './routes/station.routes';
 import daycareRoutes from './routes/daycare.routes';
+import nearbyRoutes from './routes/nearby.routes';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use(camelToSnakeMiddleware);
 // Routes
 app.use(stationRoutes);
 app.use(daycareRoutes);
+app.use(nearbyRoutes);
 app.get('/', (req, res: any) => {
   res.sendSuccess(200, 'API is running successfully');
 });

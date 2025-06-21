@@ -7,4 +7,12 @@ import { Station, IStation } from '../models/station.model';
  */
 export const findByStationCode = async (stationCode: number): Promise<IStation | null> => {
   return Station.findOne({ stationCode }).exec();
+};
+
+/**
+ * 모든 측정소 목록을 반환합니다.
+ * @returns IStation document array
+ */
+export const findAll = async (): Promise<IStation[]> => {
+  return Station.find({}).exec();
 }; 

@@ -10,6 +10,15 @@ export const findByName = async (daycareName: string): Promise<IDaycare[]> => {
     daycareName: new RegExp(daycareName, 'i') // 'i' for case-insensitive
   })
   .limit(5)
-  .select('daycareName address') // Select only the required fields
+  .select('_id daycareName address')
   .exec();
+};
+
+/**
+ * ID로 어린이집 정보를 찾습니다.
+ * @param id 조회할 어린이집의 ID
+ * @returns IDaycare document 또는 null
+ */
+export const findById = async (id: string): Promise<IDaycare | null> => {
+  return Daycare.findById(id).exec();
 }; 
