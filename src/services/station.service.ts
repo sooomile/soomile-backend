@@ -51,16 +51,15 @@ export interface AirQualityData {
   '일산화탄소': number;
 }
 
-export const getAirQuality = async (stationCode: number): Promise<AirQualityData> => {
-  // 1. 우리 DB에 해당 측정소가 있는지 확인 (Repository 사용)
-  const station = await stationRepository.findByStationCode(stationCode);
+export const getAirQualityByGu = async (guName: string): Promise<AirQualityData> => {
+  // 1. 구 이름으로 우리 DB에서 측정소 정보를 찾습니다. (Repository 사용)
+  const station = await stationRepository.findByStationName(guName);
   if (!station) {
-    throw new Error('Station not found');
+    throw new Error('Station not found for the given Gu name');
   }
 
-  // 2. API 요청 URL 생성
+  // 2. 찾은 측정소의 stationCode를 사용하여 API 요청 URL을 생성합니다.
   const serviceName = 'ListAirQualityByDistrictService';
-  // API는 JSON 형식으로 요청합니다.
   const url = `${API_BASE_URL}/${SEOUL_API_KEY}/json/${serviceName}/1/1/${station.stationCode}`;
   
   // 3. API 호출 (응답 데이터에 대한 타입 명시)

@@ -2,18 +2,19 @@ import { Request, Response } from 'express';
 import * as stationService from '../services/station.service';
 import { StatusCodes } from 'http-status-codes';
 
-export const getAirQualityByStationCode = async (req: Request, res: any) => {
+export const getAirQualityByGu = async (req: Request, res: any) => {
   try {
-    const stationCode = parseInt(req.params.stationCode, 10);
-    if (isNaN(stationCode)) {
-      return res.sendError(StatusCodes.BAD_REQUEST, 'Invalid station code.');
+    const { guName } = req.params;
+
+    if (!guName) {
+      return res.sendError(StatusCodes.BAD_REQUEST, 'A Gu name is required in the URL path.');
     }
 
-    const airQualityData = await stationService.getAirQuality(stationCode);
+    const airQualityData = await stationService.getAirQualityByGu(guName);
     res.sendSuccess(StatusCodes.OK, 'Successfully retrieved air quality data.', airQualityData);
   } catch (error: any) {
     // Service layer에서 발생한 에러를 구체적으로 처리
-    if (error.message === 'Station not found') {
+    if (error.message.includes('Station not found')) {
       return res.sendError(StatusCodes.NOT_FOUND, error.message);
     }
     if (error.message.includes('Failed to fetch') || error.message.includes('not available')) {
