@@ -52,6 +52,8 @@ export interface AirQualityData {
   pm25: number;
   '오존': number;
   '일산화탄소': number;
+  latitude: number;
+  longitude: number;
 }
 
 interface VWorldAddressItem {
@@ -145,6 +147,8 @@ export const getAirQualityByGu = async (guName: string): Promise<AirQualityData>
     pm25: parseFloat(airQuality.PM25),
     '오존': parseFloat(airQuality.OZONE),
     '일산화탄소': parseFloat(airQuality.CARBON),
+    latitude: station.latitude,
+    longitude: station.longitude,
   };
 };
 
