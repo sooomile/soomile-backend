@@ -6,6 +6,8 @@ export interface DaycareSearchResult {
   daycareName: string;
   address: string;
   distance: string;
+  latitude: number;
+  longitude: number;
 }
 
 /**
@@ -35,6 +37,8 @@ export const searchDaycaresByName = async (
       id: (daycare as any)._id.toString(),
       daycareName: daycare.daycareName,
       address: daycare.address,
+      latitude: daycare.latitude,
+      longitude: daycare.longitude,
       distance: distance, // 정렬을 위해 km 단위 원본 거리 유지
     };
   });
