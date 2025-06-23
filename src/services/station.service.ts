@@ -75,7 +75,7 @@ interface VWorldResponse {
  * @param longitude 경도
  * @returns 구 이름 (e.g., '종로구')
  */
-const getGuNameFromCoords = async (latitude: number, longitude: number): Promise<string> => {
+export const getGuNameFromCoords = async (latitude: number, longitude: number): Promise<string> => {
   try {
     const response = await axios.get<VWorldResponse>(VWORLD_API_URL, {
       params: {

@@ -7,7 +7,7 @@ import { Station, IStation } from '../models/station.model';
  */
 export const findByStationCode = async (stationCode: number): Promise<IStation | null> => {
   return Station.findOne({ stationCode }).exec();
-};
+}; 
 
 /**
  * 측정소 이름(구 이름)으로 측정소 정보를 찾습니다.

@@ -22,3 +22,4 @@ export const getNearbyStations = async (req: Request, res: any) => {
     res.sendError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
   }
 };
+ 

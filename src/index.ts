@@ -8,6 +8,7 @@ import { snakeToCamelMiddleware, camelToSnakeMiddleware } from './utils/case-con
 import stationRoutes from './routes/station.routes';
 import daycareRoutes from './routes/daycare.routes';
 import nearbyRoutes from './routes/nearby.routes';
+import predictRoutes from './routes/predict.routes';
 
 dotenv.config();
 
@@ -29,8 +30,9 @@ app.use(snakeToCamelMiddleware);
 app.use(camelToSnakeMiddleware);
 
 // Routes
-app.use(stationRoutes);
-app.use(daycareRoutes);
+app.use('/', stationRoutes);
+app.use('/', daycareRoutes);
+app.use('/predict', predictRoutes);
 app.use(nearbyRoutes);
 app.get('/', (req, res: any) => {
   res.sendSuccess(200, 'API is running successfully');
