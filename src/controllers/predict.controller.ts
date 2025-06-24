@@ -107,4 +107,6 @@ export const predictByDaycareId = async (req: Request, res: any) => {
   } catch (error: any) {
     res.sendError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
   }
-}; 
+};
+
+// 예보 데이터는 predict.service.ts에서 캐싱 적용됨

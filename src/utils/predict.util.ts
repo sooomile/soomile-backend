@@ -56,4 +56,4 @@ export const dfs_xy_conv = (lat: number, lon: number): { x: number, y: number } 
   const y = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
 
   return { x, y };
-} 
+}

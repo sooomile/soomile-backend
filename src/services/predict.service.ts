@@ -6,6 +6,7 @@ import { getGuNameFromCoords } from './station.service';
 import * as daycareRepository from '../repositories/daycare.repository';
 import * as stationRepository from '../repositories/station.repository';
 import { calculateDistance } from '../utils/distance.util';
+import { getCache, setCache } from '../utils/cache.util';
 
 dotenv.config();
 
@@ -58,6 +59,10 @@ export interface DailyForecastWithGu {
 
 // API 호출 및 데이터 가공
 export const getDailyForecast = async (latitude: number, longitude: number): Promise<DailyForecastWithGu[]> => {
+  const cacheKey = `forecast:${latitude},${longitude}`;
+  const cached = getCache<DailyForecastWithGu[]>(cacheKey);
+  if (cached) return cached;
+
   const { x, y } = dfs_xy_conv(Number(latitude), Number(longitude));
   const guName = await getGuNameFromCoords(Number(latitude), Number(longitude));
 
@@ -168,6 +173,7 @@ export const getDailyForecast = async (latitude: number, longitude: number): Pro
         구이름: guName,
       });
     }
+    setCache(cacheKey, result, 300); // 5분 캐싱
     return result;
 
   } catch (error: any) {
@@ -182,6 +188,10 @@ export const getDailyForecast = async (latitude: number, longitude: number): Pro
 };
 
 export const getDailyForecastByDaycareId = async (daycareId: string): Promise<DailyForecastWithGu[]> => {
+  const cacheKey = `forecast:daycare:${daycareId}`;
+  const cached = getCache<DailyForecastWithGu[]>(cacheKey);
+  if (cached) return cached;
+
   // 1. 어린이집 정보 조회
   const daycare = await daycareRepository.findById(daycareId);
   if (!daycare) throw new Error('Daycare not found');
@@ -285,6 +295,7 @@ export const getDailyForecastByDaycareId = async (daycareId: string): Promise<Da
         구이름: guName,
       });
     }
+    setCache(cacheKey, result, 300); // 5분 캐싱
     return result;
   } catch (error: any) {
     throw new Error('An error occurred while fetching weather forecast data.');
