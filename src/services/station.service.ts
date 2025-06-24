@@ -109,6 +109,13 @@ export const getGuNameFromCoords = async (latitude: number, longitude: number): 
   }
 }
 
+function getPm10Grade(pm10: number): string {
+  if (pm10 <= 30) return '좋음';
+  if (pm10 <= 80) return '보통';
+  if (pm10 <= 150) return '나쁨';
+  return '매우나쁨';
+}
+
 export const getAirQualityByGu = async (guName: string): Promise<AirQualityData> => {
   // 1. 구 이름으로 우리 DB에서 측정소 정보를 찾습니다. (Repository 사용)
   const station = await stationRepository.findByStationName(guName);
@@ -142,7 +149,7 @@ export const getAirQualityByGu = async (guName: string): Promise<AirQualityData>
   return {
     date: formattedDate,
     '구이름': airQuality.MSRSTENAME,
-    grade: airQuality.GRADE,
+    grade: getPm10Grade(parseFloat(airQuality.PM10)),
     pm10: parseFloat(airQuality.PM10),
     pm25: parseFloat(airQuality.PM25),
     '오존': parseFloat(airQuality.OZONE),
